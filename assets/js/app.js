@@ -830,10 +830,10 @@ document.addEventListener('keydown', (e) => {
 
   if (cheatInput.length > 10) cheatInput = cheatInput.slice(-10); // Eingabe begrenzen
 });
-let cheatInput = '';
+let cheatInput2 = '';
 document.addEventListener('keydown', (e) => {
-  cheatInput += e.key.toLowerCase();
-  if (cheatInput.endsWith('iddwd')) {
+  cheatInput2 += e.key.toLowerCase();
+  if (cheatInput2.endsWith('iddwd')) {
     bankValue += 10000000;
     document.getElementById('bankSpan').innerText = bankValue.toLocaleString("en-GB");
 
@@ -843,10 +843,10 @@ document.addEventListener('keydown', (e) => {
       }
     });
 
-    cheatInput = '';
+    cheatInput2 = '';
   }
 
-  if (cheatInput.length > 10) cheatInput = cheatInput.slice(-10); // Eingabe begrenzen
+  if (cheatInput2.length > 10) cheatInput2 = cheatInput2.slice(-10); // Eingabe begrenzen
 });
 window.addEventListener('beforeunload', function (e) {
   const confirmationMessage = "99% der Spieler hören zu früh auf – vielleicht wär der nächste Dreh dein Gewinn gewesen!";
