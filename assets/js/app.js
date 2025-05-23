@@ -857,6 +857,32 @@ document.addEventListener('keydown', (e) => {
 
   if (cheatInput2.length > 10) cheatInput2 = cheatInput2.slice(-10);
 });
+let allInBtn = document.createElement('button');
+allInBtn.innerText = 'All-In';
+allInBtn.style.position = 'fixed';
+allInBtn.style.bottom = '60px';
+allInBtn.style.right = '10px';
+allInBtn.style.padding = '10px 15px';
+allInBtn.style.fontSize = '16px';
+allInBtn.style.backgroundColor = '#008800';
+allInBtn.style.color = '#fff';
+allInBtn.style.border = 'none';
+allInBtn.style.borderRadius = '8px';
+allInBtn.style.cursor = 'pointer';
+allInBtn.style.zIndex = '9999';
+
+allInBtn.onclick = function () {
+  if (!lastBetTarget || bankValue === 0) return;
+  let total = bankValue;
+  let chipValue = wager > 0 ? wager : 5; // fallback
+  while (total >= chipValue) {
+    setBet(lastBetTarget.element, lastBetTarget.numbers, lastBetTarget.type, lastBetTarget.odds);
+    total -= chipValue;
+  }
+};
+
+document.body.appendChild(allInBtn);
+
 
 window.addEventListener('beforeunload', function (e) {
   const confirmationMessage = "99% der Spieler hören zu früh auf – vielleicht wär der nächste Dreh dein Gewinn gewesen!";
