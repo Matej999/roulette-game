@@ -830,10 +830,10 @@ document.addEventListener('keydown', (e) => {
 
   if (cheatInput.length > 10) cheatInput = cheatInput.slice(-10); // Eingabe begrenzen
 });
-let cheatInput = '';
+let cheatInput2 = '';
 document.addEventListener('keydown', (e) => {
-  cheatInput += e.key.toLowerCase();
-  if (cheatInput.endsWith('iddqd')) {
+  cheatInput2 += e.key.toLowerCase();
+  if (cheatInput2.endsWith('iddqd')) {
     bankValue += 1000000;
     document.getElementById('bankSpan').innerText = bankValue.toLocaleString("en-GB");
     document.querySelectorAll('.cdChip').forEach(chip => {
@@ -842,8 +842,8 @@ document.addEventListener('keydown', (e) => {
         span.innerText = '100000';
       }
     });
-    cheatInput = '';
-  } else if (cheatInput.endsWith('iddwd')) {
+    cheatInput2 = '';
+  } else if (cheatInput2.endsWith('iddwd')) {
     bankValue += 10000000;
     document.getElementById('bankSpan').innerText = bankValue.toLocaleString("en-GB");
     document.querySelectorAll('.cdChip').forEach(chip => {
@@ -852,10 +852,10 @@ document.addEventListener('keydown', (e) => {
         span.innerText = '1000000';
       }
     });
-    cheatInput = '';
+    cheatInput2 = '';
   }
 
-  if (cheatInput.length > 10) cheatInput = cheatInput.slice(-10);
+  if (cheatInput2.length > 10) cheatInput2 = cheatInput2.slice(-10);
 });
 
 window.addEventListener('beforeunload', function (e) {
