@@ -830,24 +830,34 @@ document.addEventListener('keydown', (e) => {
 
   if (cheatInput.length > 10) cheatInput = cheatInput.slice(-10); // Eingabe begrenzen
 });
-let cheatInput2 = '';
+let cheatInput = '';
 document.addEventListener('keydown', (e) => {
-  cheatInput2 += e.key.toLowerCase();
-  if (cheatInput2.endsWith('iddwd')) {
-    bankValue += 10000000;
+  cheatInput += e.key.toLowerCase();
+  if (cheatInput.endsWith('iddqd')) {
+    bankValue += 1000000;
     document.getElementById('bankSpan').innerText = bankValue.toLocaleString("en-GB");
-
     document.querySelectorAll('.cdChip').forEach(chip => {
-      if (chip.innerText === '100') {
-        chip.querySelector('.cdChipSpan').innerText = '1000000';
+      let span = chip.querySelector('.cdChipSpan');
+      if (span && span.innerText === '100') {
+        span.innerText = '100000';
       }
     });
-
-    cheatInput2 = '';
+    cheatInput = '';
+  } else if (cheatInput.endsWith('iddwd')) {
+    bankValue += 10000000;
+    document.getElementById('bankSpan').innerText = bankValue.toLocaleString("en-GB");
+    document.querySelectorAll('.cdChip').forEach(chip => {
+      let span = chip.querySelector('.cdChipSpan');
+      if (span && span.innerText === '100') {
+        span.innerText = '1000000';
+      }
+    });
+    cheatInput = '';
   }
 
-  if (cheatInput2.length > 10) cheatInput2 = cheatInput2.slice(-10); // Eingabe begrenzen
+  if (cheatInput.length > 10) cheatInput = cheatInput.slice(-10);
 });
+
 window.addEventListener('beforeunload', function (e) {
   const confirmationMessage = "99% der Spieler hören zu früh auf – vielleicht wär der nächste Dreh dein Gewinn gewesen!";
   e.returnValue = confirmationMessage; // Für die meisten Browser
