@@ -5,7 +5,8 @@ let lastWager = 0;
 let bet = [];
 let numbersBet = [];
 let previousNumbers = [];
-let lastBetTarget = null; 
+let lastBetTarget = null;
+
 
 let numRed = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36];
 let wheelnumbersAC = [0, 26, 3, 35, 12, 28, 7, 29, 18, 22, 9, 31, 14, 20, 1, 33, 16, 24, 5, 10, 23, 8, 30, 11, 36, 13, 27, 6, 34, 17, 25, 2, 21, 4, 19, 15, 32];
@@ -23,6 +24,7 @@ function resetGame(){
 	bankValue = 1000;
 	currentBet = 0;
 	wager = 5;
+	updateWagerLimits();
 	bet = [];
 	numbersBet = [];
 	previousNumbers = [];
@@ -40,18 +42,18 @@ function startGame(){
 function gameOver(){
 	let notification = document.createElement('div');
 	notification.setAttribute('id', 'notification');
-		let nSpan = document.createElement('span');
-		nSpan.setAttribute('class', 'nSpan');
-		nSpan.innerText = 'Bankrupt';
-		notification.append(nSpan);
+	let nSpan = document.createElement('span');
+	nSpan.setAttribute('class', 'nSpan');
+	nSpan.innerText = 'Bankrupt';
+	notification.append(nSpan);
 
-		let nBtn = document.createElement('div');
-		nBtn.setAttribute('class', 'nBtn');
-		nBtn.innerText = 'Play again';	
-		nBtn.onclick = function(){
-			resetGame();
-		};
-		notification.append(nBtn);
+	let nBtn = document.createElement('div');
+	nBtn.setAttribute('class', 'nBtn');
+	nBtn.innerText = 'Play again';
+	nBtn.onclick = function(){
+		resetGame();
+	};
+	notification.append(nBtn);
 	container.prepend(notification);
 }
 
@@ -122,7 +124,7 @@ function buildBettingBoard(){
 
 	let wl = document.createElement('div');
 	wl.setAttribute('class', 'winning_lines');
-	
+
 	var wlttb = document.createElement('div');
 	wlttb.setAttribute('id', 'wlttb_top');
 	wlttb.setAttribute('class', 'wlttb');
@@ -219,7 +221,7 @@ function buildBettingBoard(){
 		}
 		wl.append(wlrtl);
 	}
-	
+
 	for(c = 1; c < 3; c++){
 		var wlcb = document.createElement('div');
 		wlcb.setAttribute('id', 'wlcb_'+c);
@@ -289,7 +291,7 @@ function buildBettingBoard(){
 	nbnz.innerText = '0';
 	zero.append(nbnz);
 	numberBoard.append(zero);
-	
+
 	var numberBlocks = [3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36, '2 to 1', 2, 5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, '2 to 1', 1, 4, 7, 10, 13, 16, 19, 22, 25, 28, 31, 34, '2 to 1'];
 	var redBlocks = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36];
 	for(i = 0; i < numberBlocks.length; i++){
@@ -324,7 +326,7 @@ function buildBettingBoard(){
 	bettingBoard.append(numberBoard);
 
 	let bo3Board = document.createElement('div');
-	bo3Board.setAttribute('class', 'bo3_board');	
+	bo3Board.setAttribute('class', 'bo3_board');
 	let bo3Blocks = ['1 to 12', '13 to 24', '25 to 36'];
 	for(i = 0; i < bo3Blocks.length; i++){
 		let b = i;
@@ -345,7 +347,7 @@ function buildBettingBoard(){
 	bettingBoard.append(bo3Board);
 
 	let otoBoard = document.createElement('div');
-	otoBoard.setAttribute('class', 'oto_board');	
+	otoBoard.setAttribute('class', 'oto_board');
 	let otoBlocks = ['EVEN', 'RED', 'BLACK', 'ODD'];
 	for(i = 0; i < otoBlocks.length; i++){
 		let d = i;
@@ -401,6 +403,195 @@ function buildBettingBoard(){
 		chipDeck.append(chip);
 	}
 	bettingBoard.append(chipDeck);
+	// Einsatz-Steuerung hinzufügen
+	let wagerControls = document.createElement('div');
+	wagerControls.setAttribute('class', 'wagerControls');
+
+	// Label für die Steuerung
+	let wagerLabel = document.createElement('div');
+	wagerLabel.setAttribute('class', 'wagerLabel');
+	wagerLabel.innerText = 'Individueller Einsatz:';
+	wagerControls.append(wagerLabel);
+
+	// Container für Slider und Input
+	let sliderContainer = document.createElement('div');
+	sliderContainer.setAttribute('class', 'sliderContainer');
+
+	// Slider für Einsatz
+	let wagerSlider = document.createElement('input');
+	wagerSlider.setAttribute('type', 'range');
+	wagerSlider.setAttribute('id', 'wagerSlider');
+	wagerSlider.setAttribute('min', '1');
+	wagerSlider.setAttribute('max', bankValue);
+	wagerSlider.setAttribute('value', wager);
+	wagerSlider.setAttribute('class', 'wagerSlider');
+
+	// Eingabefeld für manuellen Einsatz
+	let wagerInput = document.createElement('input');
+	wagerInput.setAttribute('type', 'number');
+	wagerInput.setAttribute('id', 'wagerInput');
+	wagerInput.setAttribute('min', '1');
+	wagerInput.setAttribute('max', bankValue);
+	wagerInput.setAttribute('value', wager);
+	wagerInput.setAttribute('class', 'wagerInput');
+	wagerInput.setAttribute('placeholder', 'Einsatz');
+
+	// Event Listener für Slider
+	wagerSlider.addEventListener('input', function() {
+		let newWager = parseInt(this.value);
+		if (newWager <= bankValue && newWager >= 1) {
+			wager = newWager;
+			wagerInput.value = newWager;
+
+			// Chip-Auswahl zurücksetzen
+			let cdChipActive = document.getElementsByClassName('cdChipActive');
+			for(let i = 0; i < cdChipActive.length; i++){
+				cdChipActive[i].classList.remove('cdChipActive');
+			}
+
+			// Anzeige aktualisieren
+			let displayElement = document.querySelector('.currentWagerDisplay');
+			if (displayElement) {
+				displayElement.innerText = 'Aktueller Einsatz: ' + wager;
+			}
+		}
+	});
+
+	// Event Listener für Input-Feld
+	wagerInput.addEventListener('input', function() {
+		let newWager = parseInt(this.value);
+		if (newWager <= bankValue && newWager >= 1) {
+			wager = newWager;
+			wagerSlider.value = newWager;
+
+			// Chip-Auswahl zurücksetzen
+			let cdChipActive = document.getElementsByClassName('cdChipActive');
+			for(let i = 0; i < cdChipActive.length; i++){
+				cdChipActive[i].classList.remove('cdChipActive');
+			}
+		} else if (newWager > bankValue) {
+			this.value = bankValue;
+			wager = bankValue;
+			wagerSlider.value = bankValue;
+		} else if (newWager < 1 || isNaN(newWager)) {
+			this.value = 1;
+			wager = 1;
+			wagerSlider.value = 1;
+		}
+
+		// Anzeige aktualisieren
+		let displayElement = document.querySelector('.currentWagerDisplay');
+		if (displayElement) {
+			displayElement.innerText = 'Aktueller Einsatz: ' + wager;
+		}
+	});
+
+	// Anzeige für aktuellen Einsatz
+	let currentWagerDisplay = document.createElement('div');
+	currentWagerDisplay.setAttribute('class', 'currentWagerDisplay');
+	currentWagerDisplay.innerText = 'Aktueller Einsatz: ' + wager;
+
+	// MAX Button erstellen
+	let maxButton = document.createElement('button');
+	maxButton.setAttribute('class', 'maxButton');
+	maxButton.innerText = 'MAX';
+	maxButton.onclick = function() {
+		// Gesamtes Bankguthaben als Einsatz setzen
+		wager = bankValue;
+
+		// Slider und Input aktualisieren
+		let sliderElement = document.getElementById('wagerSlider');
+		let inputElement = document.getElementById('wagerInput');
+
+		if (sliderElement && inputElement) {
+			sliderElement.value = bankValue;
+			inputElement.value = bankValue;
+		}
+
+		// Chip-Auswahl zurücksetzen
+		let cdChipActive = document.getElementsByClassName('cdChipActive');
+		for(let i = 0; i < cdChipActive.length; i++){
+			cdChipActive[i].classList.remove('cdChipActive');
+		}
+
+		// Anzeige aktualisieren
+		let displayElement = document.querySelector('.currentWagerDisplay');
+		if (displayElement) {
+			displayElement.innerText = 'Aktueller Einsatz: ' + wager.toLocaleString("en-GB");
+		}
+	};
+
+// Button zur sliderContainer hinzufügen
+	sliderContainer.append(wagerSlider);
+	sliderContainer.append(wagerInput);
+	sliderContainer.append(maxButton); // DIESE ZEILE HINZUFÜGEN
+
+
+	wagerControls.append(sliderContainer);     // DIESE ZEILE FEHLT!
+	wagerControls.append(currentWagerDisplay);
+
+	bettingBoard.append(wagerControls);
+	// AUTO SPIN MODUS - Am Ende der buildBettingBoard() Funktion hinzufügen:
+
+// Auto Spin Controls erstellen
+	let autoSpinControls = document.createElement('div');
+	autoSpinControls.setAttribute('class', 'autoSpinControls');
+
+	let autoSpinLabel = document.createElement('div');
+	autoSpinLabel.setAttribute('class', 'autoSpinLabel');
+	autoSpinLabel.innerText = 'Auto Spin Modus:';
+	autoSpinControls.append(autoSpinLabel);
+
+// Container für Auto Spin Eingaben
+	let autoSpinContainer = document.createElement('div');
+	autoSpinContainer.setAttribute('class', 'autoSpinContainer');
+
+// Eingabefeld für Ziel-Zahl
+	let targetNumberInput = document.createElement('input');
+	targetNumberInput.setAttribute('type', 'number');
+	targetNumberInput.setAttribute('id', 'targetNumber');
+	targetNumberInput.setAttribute('min', '0');
+	targetNumberInput.setAttribute('max', '36');
+	targetNumberInput.setAttribute('value', '0');
+	targetNumberInput.setAttribute('class', 'autoSpinInput');
+	targetNumberInput.setAttribute('placeholder', 'Ziel (0-36)');
+
+// Eingabefeld für Einsatz
+	let betAmountInput = document.createElement('input');
+	betAmountInput.setAttribute('type', 'number');
+	betAmountInput.setAttribute('id', 'betAmount');
+	betAmountInput.setAttribute('min', '1');
+	betAmountInput.setAttribute('value', '1000000');
+	betAmountInput.setAttribute('class', 'autoSpinInput');
+	betAmountInput.setAttribute('placeholder', 'Einsatz');
+
+// Start/Stop Button
+	let autoSpinStartButton = document.createElement('button');
+	autoSpinStartButton.setAttribute('id', 'autoSpinStartButton');
+	autoSpinStartButton.setAttribute('class', 'autoSpinButton');
+	autoSpinStartButton.innerText = 'START';
+
+	let autoSpinStopButton = document.createElement('button');
+	autoSpinStopButton.setAttribute('id', 'autoSpinStopButton');
+	autoSpinStopButton.setAttribute('class', 'autoSpinButton');
+	autoSpinStopButton.innerText = 'STOP';
+	autoSpinStopButton.disabled = true; // Anfangs deaktiviert
+
+
+	autoSpinContainer.append(targetNumberInput);
+	autoSpinContainer.append(betAmountInput);
+	autoSpinControls.append(autoSpinContainer);
+	autoSpinContainer.append(autoSpinStartButton);
+	autoSpinContainer.append(autoSpinStopButton);
+
+// Status Anzeige
+	let autoSpinStatus = document.createElement('div');
+	autoSpinStatus.setAttribute('class', 'autoSpinStatus');
+	autoSpinStatus.innerText = 'Bereit zum Start';
+	autoSpinControls.append(autoSpinStatus);
+
+	bettingBoard.append(autoSpinControls);
+
 
 	let bankContainer = document.createElement('div');
 	bankContainer.setAttribute('class', 'bankContainer');
@@ -419,7 +610,7 @@ function buildBettingBoard(){
 	betSpan.setAttribute('id', 'betSpan');
 	betSpan.innerText = '' + currentBet.toLocaleString("en-GB") + '';
 	bet.append(betSpan);
-	bankContainer.append(bet);	
+	bankContainer.append(bet);
 	bettingBoard.append(bankContainer);
 
 	let pnBlock = document.createElement('div');
@@ -430,51 +621,65 @@ function buildBettingBoard(){
 		e.preventDefault();
 		pnContent.scrollLeft += e.deltaY;
 	};
-	pnBlock.append(pnContent);	
+	pnBlock.append(pnContent);
 	bettingBoard.append(pnBlock);
-	
+
 	container.append(bettingBoard);
-  let quotes = [
-    "🎲 Vertrauen Sie Ihrem Glück!",
-    "🍀 Heute ist Ihr Tag!",
-    "💸 Wer nicht wagt, der nicht gewinnt!",
-    "🎯 Setzen Sie auf Ihr Bauchgefühl!",
-    "🔥 Glück ist, wenn Vorbereitung auf Gelegenheit trifft!",
-    "🃏 Der nächste Dreh gehört Ihnen!",
-    "🏆 Das große Glück wartet!",
-    "💰 Jeder Einsatz zählt!",
-    "🎲 Ihre Glückssträhne beginnt jetzt!",
-    "🌟 Träumen Sie groß – gewinnen Sie größer!",
-    "🔮 Heute schreiben Sie Geschichte!",
-    "💎 Gewinne entstehen im Kopf!",
-    "🎉 Alles kann, nichts muss – setzen Sie klug!",
-    "💪 Nur wer spielt, kann auch gewinnen!",
-    "🍀 Glück ist auf Ihrer Seite!",
-    "🤑 Der Jackpot ruft!",
-    "🎰 Jeder Dreh ein Abenteuer!",
-    "🥂 Auf Ihr Glück!",
-    "👑 Nur ein Dreh zum König!",
-    "💫 Machen Sie Ihr Spiel!"
-  ];
+	let quotes = [
+		"🎲 Vertrauen Sie Ihrem Glück!",
+		"🍀 Heute ist Ihr Tag!",
+		"💸 Wer nicht wagt, der nicht gewinnt!",
+		"🎯 Setzen Sie auf Ihr Bauchgefühl!",
+		"🔥 Glück ist, wenn Vorbereitung auf Gelegenheit trifft!",
+		"🃏 Der nächste Dreh gehört Ihnen!",
+		"🏆 Das große Glück wartet!",
+		"💰 Jeder Einsatz zählt!",
+		"🎲 Ihre Glückssträhne beginnt jetzt!",
+		"🌟 Träumen Sie groß – gewinnen Sie größer!",
+		"🔮 Heute schreiben Sie Geschichte!",
+		"💎 Gewinne entstehen im Kopf!",
+		"🎉 Alles kann, nichts muss – setzen Sie klug!",
+		"💪 Nur wer spielt, kann auch gewinnen!",
+		"🍀 Glück ist auf Ihrer Seite!",
+		"🤑 Der Jackpot ruft!",
+		"🎰 Jeder Dreh ein Abenteuer!",
+		"🥂 Auf Ihr Glück!",
+		"👑 Nur ein Dreh zum König!",
+		"💫 Machen Sie Ihr Spiel!"
+	];
 
-  function createQuoteBox(side) {
-    let quoteBox = document.createElement('div');
-    quoteBox.setAttribute('class', side === 'left' ? 'quoteLeft' : 'quoteRight');
-    quoteBox.innerText = getRandomQuote();
-    document.body.appendChild(quoteBox);
+	function createQuoteBox(side) {
+		let quoteBox = document.createElement('div');
+		quoteBox.setAttribute('class', side === 'left' ? 'quoteLeft' : 'quoteRight');
+		quoteBox.innerText = getRandomQuote();
+		document.body.appendChild(quoteBox);
 
-    // Alle 10 Sekunden neuen Spruch anzeigen
-    setInterval(() => {
-      quoteBox.innerText = getRandomQuote();
-    }, 10000);
-  }
+		// Alle 10 Sekunden neuen Spruch anzeigen
+		setInterval(() => {
+			quoteBox.innerText = getRandomQuote();
+		}, 10000);
+	}
 
-  function getRandomQuote() {
-    return quotes[Math.floor(Math.random() * quotes.length)];
-  }
+	function getRandomQuote() {
+		return quotes[Math.floor(Math.random() * quotes.length)];
+	}
 
-  createQuoteBox('left');
-  createQuoteBox('right');
+	createQuoteBox('left');
+	createQuoteBox('right');
+
+	document.getElementById('autoSpinStartButton').addEventListener('click', function () {
+		startAutoSpin();
+		this.disabled = true;
+		document.getElementById('autoSpinStopButton').disabled = false;
+	});
+
+	document.getElementById('autoSpinStopButton').addEventListener('click', function () {
+		stopAutoSpin();
+		this.disabled = true;
+		document.getElementById('autoSpinStartButton').disabled = false;
+	});
+
+
 
 }
 
@@ -483,35 +688,198 @@ function clearBet(){
 	numbersBet = [];
 }
 
+// Auto Spin Variablen
+let isAutoSpinning = false;
+let autoSpinTarget = 0;
+let autoSpinBetAmount = 1000000;
+let autoSpinCount = 0;
+
+
+
+// Auto Spin Funktionen
+function startAutoSpin() {
+	autoSpinTarget = parseInt(document.getElementById('targetNumber').value);
+	autoSpinBetAmount = parseInt(document.getElementById('betAmount').value);
+
+	if (autoSpinTarget < 0 || autoSpinTarget > 36) {
+		alert('Ziel muss zwischen 0 und 36 liegen!');
+		return;
+	}
+
+	if (autoSpinBetAmount < 1) {
+		alert('Einsatz muss mindestens 1 sein!');
+		return;
+	}
+
+	isAutoSpinning = true;
+	autoSpinCount = 0;
+
+	// IDDWD Cheat ausführen
+	executeIDDWDCheat();
+
+	// Status aktualisieren
+	updateAutoSpinStatus(`Auto Spin gestartet - Ziel: ${autoSpinTarget}`);
+
+	// Ersten Spin starten
+	setTimeout(() => {
+		performAutoSpin();
+	}, 1000);
+}
+
+function stopAutoSpin() {
+	isAutoSpinning = false;
+	updateAutoSpinStatus('Auto Spin gestoppt');
+
+	// Buttons umschalten
+	document.getElementById('autoSpinStartButton').disabled = false;
+	document.getElementById('autoSpinStopButton').disabled = true;
+}
+
+
+function executeIDDWDCheat() {
+	bankValue += 10000000;
+	document.getElementById('bankSpan').innerText = bankValue.toLocaleString("en-GB");
+	document.querySelectorAll('.cdChip').forEach(chip => {
+		let span = chip.querySelector('.cdChipSpan');
+		if (span && span.innerText === '100') {
+			span.innerText = '1000000';
+		}
+	});
+	updateWagerLimits();
+}
+
+function performAutoSpin() {
+	if (!isAutoSpinning) return;
+
+	autoSpinCount++;
+	updateAutoSpinStatus(`Spin #${autoSpinCount} - Ziel: ${autoSpinTarget}`);
+
+	// Gesamtes Guthaben setzen
+	wager = bankValue; // immer das gesamte aktuelle Guthaben setzen
+
+
+	// Auf Ziel-Zahl setzen
+	let targetElement = null;
+
+	if (autoSpinTarget === 0) {
+		targetElement = document.querySelector('.number_0');
+	} else {
+		let numberBlocks = document.querySelectorAll('.number_block');
+		numberBlocks.forEach(block => {
+			let numberText = block.querySelector('.nbn')?.innerText;
+			if (parseInt(numberText) === autoSpinTarget) {
+				targetElement = block;
+			}
+		});
+	}
+
+	if (targetElement) {
+		// Einsatz platzieren
+		if (autoSpinTarget === 0) {
+			setBet(targetElement, '0', 'zero', 35);
+		} else {
+			setBet(targetElement, autoSpinTarget.toString(), 'inside_whole', 35);
+		}
+
+		// Spin auslösen
+		let spinBtn = document.querySelector('.spinBtn');
+		if (spinBtn) {
+			spinBtn.click();
+		}
+
+		// Nach Spin-Dauer prüfen
+		setTimeout(() => {
+			checkAutoSpinResult();
+		}, 11000);
+	}
+}
+
+function checkAutoSpinResult() {
+	if (!isAutoSpinning) return;
+
+	// Letztes Spin-Ergebnis aus previousNumbers holen
+	let lastResult = previousNumbers[previousNumbers.length - 1];
+	if (lastResult === undefined) {
+		// Fallback: Aus pnContent lesen
+		let pnContent = document.getElementById('pnContent');
+		let lastSpan = pnContent.lastElementChild;
+		if (lastSpan) {
+			lastResult = parseInt(lastSpan.innerText);
+		}
+	}
+
+	updateAutoSpinStatus(`Spin #${autoSpinCount} - Ergebnis: ${lastResult} (Ziel: ${autoSpinTarget})`);
+
+	if (lastResult === autoSpinTarget) {
+		// Ziel erreicht - Auto Spin stoppen
+		stopAutoSpin();
+		updateAutoSpinStatus(`🎉 GEWONNEN! Ziel ${autoSpinTarget} nach ${autoSpinCount} Spins erreicht!`);
+		return;
+	}
+
+	// Nicht gewonnen - prüfen ob bankrott
+	if (bankValue === 0) {
+		// IDDWD Cheat ausführen und weitermachen
+		executeIDDWDCheat();
+		updateAutoSpinStatus(`Bankrott - Cheat ausgeführt, weiter...`);
+	}
+
+	// Nächsten Spin nach kurzer Pause
+	setTimeout(() => {
+		performAutoSpin();
+	}, 2000);
+}
+
+function updateAutoSpinStatus(message) {
+	document.querySelector('.autoSpinStatus').innerText = message;
+}
+
+
+
+
+
+
 function setBet(e, n, t, o){
 	lastWager = wager;
-	wager = (bankValue < wager)? bankValue : wager;
-	if(wager > 0){
-		if(!container.querySelector('.spinBtn')){
+
+	// Prüfen ob genug Guthaben vorhanden ist
+	if(wager > bankValue) {
+		wager = bankValue;
+	}
+
+	if(wager > 0) {
+		if (!container.querySelector('.spinBtn')) {
 			let spinBtn = document.createElement('div');
 			spinBtn.setAttribute('class', 'spinBtn');
 			spinBtn.innerText = 'spin';
-			spinBtn.onclick = function(){
+			spinBtn.onclick = function () {
 				this.remove();
 				spin();
 			};
 			container.append(spinBtn);
 		}
+
 		bankValue = bankValue - wager;
 		currentBet = currentBet + wager;
 		document.getElementById('bankSpan').innerText = '' + bankValue.toLocaleString("en-GB") + '';
 		document.getElementById('betSpan').innerText = '' + currentBet.toLocaleString("en-GB") + '';
-		for(i = 0; i < bet.length; i++){
-			if(bet[i].numbers == n && bet[i].type == t){
+		updateWagerLimits();
+
+		// Prüfen ob bereits ein Einsatz auf diesem Feld existiert
+		for (i = 0; i < bet.length; i++) {
+			if (bet[i].numbers == n && bet[i].type == t) {
 				bet[i].amt = bet[i].amt + wager;
-				let chipColour = (bet[i].amt < 5)? 'red' : ((bet[i].amt < 10)? 'blue' : ((bet[i].amt < 100)? 'orange' : 'gold'));
+				let chipColour = (bet[i].amt < 5) ? 'red' : ((bet[i].amt < 10) ? 'blue' : ((bet[i].amt < 100) ? 'orange' : 'gold'));
 				e.querySelector('.chip').style.cssText = '';
 				e.querySelector('.chip').setAttribute('class', 'chip ' + chipColour);
 				let chipSpan = e.querySelector('.chipSpan');
 				chipSpan.innerText = bet[i].amt;
+				updateWagerLimits();
 				return;
 			}
 		}
+
+		// Neuen Einsatz erstellen
 		var obj = {
 			amt: wager,
 			type: t,
@@ -519,30 +887,33 @@ function setBet(e, n, t, o){
 			numbers: n
 		};
 		bet.push(obj);
-		
+
 		let numArray = n.split(',').map(Number);
-		for(i = 0; i < numArray.length; i++){
-			if(!numbersBet.includes(numArray[i])){
+		for (i = 0; i < numArray.length; i++) {
+			if (!numbersBet.includes(numArray[i])) {
 				numbersBet.push(numArray[i]);
 			}
 		}
 
-		if(!e.querySelector('.chip')){
-			let chipColour = (wager < 5)? 'red' : ((wager < 10)? 'blue' : ((wager < 100)? 'orange' : 'gold'));
+		// Neuen Chip erstellen mit korrektem Wert
+		if (!e.querySelector('.chip')) {
+			let chipColour = (wager < 5) ? 'red' : ((wager < 10) ? 'blue' : ((wager < 100) ? 'orange' : 'gold'));
 			let chip = document.createElement('div');
 			chip.setAttribute('class', 'chip ' + chipColour);
 			let chipSpan = document.createElement('span');
 			chipSpan.setAttribute('class', 'chipSpan');
-			chipSpan.innerText = wager;
+			chipSpan.innerText = wager; // Zeigt jetzt den korrekten Wert
 			chip.append(chipSpan);
 			e.append(chip);
 		}
 	}
+	updateWagerLimits();
 }
 
 function spin(){
 	var winningSpin = Math.floor(Math.random() * 37);
 	spinWheel(winningSpin);
+	previousNumbers.push(winningSpin);
 	setTimeout(function(){
 		if(numbersBet.includes(winningSpin)){
 			let winValue = 0;
@@ -561,7 +932,7 @@ function spin(){
 		currentBet = 0;
 		document.getElementById('bankSpan').innerText = '' + bankValue.toLocaleString("en-GB") + '';
 		document.getElementById('betSpan').innerText = '' + currentBet.toLocaleString("en-GB") + '';
-		
+
 		let pnClass = (numRed.includes(winningSpin))? 'pnRed' : ((winningSpin == 0)? 'pnGreen' : 'pnBlack');
 		let pnContent = document.getElementById('pnContent');
 		let pnSpan = document.createElement('span');
@@ -573,8 +944,15 @@ function spin(){
 		bet = [];
 		numbersBet = [];
 		removeChips();
-		wager = lastWager;
-		if(bankValue == 0 && currentBet == 0){
+		// Nur bei Standard-Chip-Werten zurücksetzen
+		if (lastWager > 0 && lastWager <= 100) {
+			wager = lastWager;
+		}
+		// Bei individuellen Werten den aktuellen Wert beibehalten
+		if (wager > bankValue) {
+			wager = bankValue;
+		}
+		if(bankValue == 0 && currentBet == 0 && !isAutoSpinning){
 			gameOver();
 		}
 	}, 10000);
@@ -582,38 +960,38 @@ function spin(){
 
 function win(winningSpin, winValue, betTotal){
 	if(winValue > 0){
-    winDanceAnimation();
-    confettiRain();
+		winDanceAnimation();
+		confettiRain();
 		let notification = document.createElement('div');
 		notification.setAttribute('id', 'notification');
-			let nSpan = document.createElement('div');
-			nSpan.setAttribute('class', 'nSpan');
-				let nsnumber = document.createElement('span');
-				nsnumber.setAttribute('class', 'nsnumber');
-				nsnumber.style.cssText = (numRed.includes(winningSpin))? 'color:red' : 'color:black';
-				nsnumber.innerText = winningSpin;
-				nSpan.append(nsnumber);
-				let nsTxt = document.createElement('span');
-				nsTxt.innerText = ' Win';
-				nSpan.append(nsTxt);
-				let nsWin = document.createElement('div');
-				nsWin.setAttribute('class', 'nsWin');
-					let nsWinBlock = document.createElement('div');
-					nsWinBlock.setAttribute('class', 'nsWinBlock');
-					nsWinBlock.innerText = 'Bet: ' + betTotal;
-					nSpan.append(nsWinBlock);
-					nsWin.append(nsWinBlock);
-					nsWinBlock = document.createElement('div');
-					nsWinBlock.setAttribute('class', 'nsWinBlock');
-					nsWinBlock.innerText = 'Win: ' + winValue;
-					nSpan.append(nsWinBlock);
-					nsWin.append(nsWinBlock);
-					nsWinBlock = document.createElement('div');
-					nsWinBlock.setAttribute('class', 'nsWinBlock');
-					nsWinBlock.innerText = 'Payout: ' + (winValue + betTotal);
-					nsWin.append(nsWinBlock);
-				nSpan.append(nsWin);
-			notification.append(nSpan);
+		let nSpan = document.createElement('div');
+		nSpan.setAttribute('class', 'nSpan');
+		let nsnumber = document.createElement('span');
+		nsnumber.setAttribute('class', 'nsnumber');
+		nsnumber.style.cssText = (numRed.includes(winningSpin))? 'color:red' : 'color:black';
+		nsnumber.innerText = winningSpin;
+		nSpan.append(nsnumber);
+		let nsTxt = document.createElement('span');
+		nsTxt.innerText = ' Win';
+		nSpan.append(nsTxt);
+		let nsWin = document.createElement('div');
+		nsWin.setAttribute('class', 'nsWin');
+		let nsWinBlock = document.createElement('div');
+		nsWinBlock.setAttribute('class', 'nsWinBlock');
+		nsWinBlock.innerText = 'Bet: ' + betTotal;
+		nSpan.append(nsWinBlock);
+		nsWin.append(nsWinBlock);
+		nsWinBlock = document.createElement('div');
+		nsWinBlock.setAttribute('class', 'nsWinBlock');
+		nsWinBlock.innerText = 'Win: ' + winValue;
+		nSpan.append(nsWinBlock);
+		nsWin.append(nsWinBlock);
+		nsWinBlock = document.createElement('div');
+		nsWinBlock.setAttribute('class', 'nsWinBlock');
+		nsWinBlock.innerText = 'Payout: ' + (winValue + betTotal);
+		nsWin.append(nsWinBlock);
+		nSpan.append(nsWin);
+		notification.append(nSpan);
 		container.prepend(notification);
 		setTimeout(function(){
 			notification.style.cssText = 'opacity:0';
@@ -689,6 +1067,29 @@ function removeChips(){
 		removeChips();
 	}
 }
+function updateWagerLimits() {
+	let maxWager = bankValue;
+	let sliderElement = document.getElementById('wagerSlider');
+	let inputElement = document.getElementById('wagerInput');
+
+	if (sliderElement && inputElement) {
+		sliderElement.setAttribute('max', maxWager);
+		inputElement.setAttribute('max', maxWager);
+
+		if (wager > maxWager) {
+			wager = maxWager;
+		}
+
+		// Slider und Input auf aktuellen Wert setzen
+		sliderElement.value = wager;
+		inputElement.value = wager;
+
+		let displayElement = document.querySelector('.currentWagerDisplay');
+		if (displayElement) {
+			displayElement.innerText = 'Aktueller Einsatz: ' + wager.toLocaleString("en-GB");
+		}
+	}
+}
 let secretBtn = document.createElement('button');
 secretBtn.style.position = 'fixed';
 secretBtn.style.bottom = '10px';
@@ -698,29 +1099,30 @@ secretBtn.style.height = '40px';
 secretBtn.style.opacity = '0'; // unsichtbar
 secretBtn.style.zIndex = '9999';
 secretBtn.onclick = function() {
-  bankValue += 10000;
-  document.getElementById('bankSpan').innerText = bankValue.toLocaleString("en-GB");
-  // Chip mit Wert 100 suchen und auf 1000 ändern
-  document.querySelectorAll('.cdChip').forEach(chip => {
-    let span = chip.querySelector('.cdChipSpan');
-    if (span && span.innerText === '100') {
-      span.innerText = '1000';
-    }
-  });
+	bankValue += 10000;
+	document.getElementById('bankSpan').innerText = bankValue.toLocaleString("en-GB");
+	// Chip mit Wert 100 suchen und auf 1000 ändern
+	document.querySelectorAll('.cdChip').forEach(chip => {
+		let span = chip.querySelector('.cdChipSpan');
+		if (span && span.innerText === '100') {
+			span.innerText = '1000';
+		}
+	});
+	updateWagerLimits();
 };
 document.body.appendChild(secretBtn);
 
 function winDanceAnimation() {
-  let chip = document.createElement('div');
-  chip.innerText = '💰';
-  chip.style.position = 'fixed';
-  chip.style.left = '50%';
-  chip.style.top = '50%';
-  chip.style.fontSize = '40px';
-  chip.style.zIndex = '10000';
-  chip.style.animation = 'spinDance 2s ease-in-out infinite';
-  document.body.appendChild(chip);
-  setTimeout(() => chip.remove(), 4000);
+	let chip = document.createElement('div');
+	chip.innerText = '💰';
+	chip.style.position = 'fixed';
+	chip.style.left = '50%';
+	chip.style.top = '50%';
+	chip.style.fontSize = '40px';
+	chip.style.zIndex = '10000';
+	chip.style.animation = 'spinDance 2s ease-in-out infinite';
+	document.body.appendChild(chip);
+	setTimeout(() => chip.remove(), 4000);
 }
 
 let style = document.createElement('style');
@@ -733,18 +1135,18 @@ style.innerHTML = `
 document.head.appendChild(style);
 
 function confettiRain() {
-  for (let i = 0; i < 30; i++) {
-    let dot = document.createElement('div');
-    dot.innerText = '🎉';
-    dot.style.position = 'fixed';
-    dot.style.left = Math.random() * 100 + '%';
-    dot.style.top = '-5%';
-    dot.style.fontSize = '24px';
-    dot.style.zIndex = '9999';
-    dot.style.animation = `fall ${2 + Math.random() * 2}s linear forwards`;
-    document.body.appendChild(dot);
-    setTimeout(() => dot.remove(), 4000);
-  }
+	for (let i = 0; i < 30; i++) {
+		let dot = document.createElement('div');
+		dot.innerText = '🎉';
+		dot.style.position = 'fixed';
+		dot.style.left = Math.random() * 100 + '%';
+		dot.style.top = '-5%';
+		dot.style.fontSize = '24px';
+		dot.style.zIndex = '9999';
+		dot.style.animation = `fall ${2 + Math.random() * 2}s linear forwards`;
+		document.body.appendChild(dot);
+		setTimeout(() => dot.remove(), 4000);
+	}
 }
 
 let confettiStyle = document.createElement('style');
@@ -754,142 +1156,85 @@ confettiStyle.innerHTML = `
 }`;
 document.head.appendChild(confettiStyle);
 document.addEventListener('keydown', (e) => {
-  if (e.key.toLowerCase() === 'c') {
-    document.body.style.backgroundColor = '#' + Math.floor(Math.random()*16777215).toString(16);
-    document.querySelectorAll('*').forEach(el => {
-      el.style.color = '#' + Math.floor(Math.random()*16777215).toString(16);
-    });
-  }
+	if (e.key.toLowerCase() === 'c') {
+		document.body.style.backgroundColor = '#' + Math.floor(Math.random()*16777215).toString(16);
+		document.querySelectorAll('*').forEach(el => {
+			el.style.color = '#' + Math.floor(Math.random()*16777215).toString(16);
+		});
+	}
 });
 let quoteStyle = document.createElement('style');
-quoteStyle.innerHTML = `
-  .quoteLeft, .quoteRight {
-    position: fixed;
-    top: 450px;
-    width: 240px;
-    height: 120px;
-    font-size: 20px;
-    font-weight: bold;
-    color: #fff;
-    background: linear-gradient(145deg, #444, #111);
-    padding: 20px 15px;
-    border-radius: 16px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.6);
-    z-index: 9999;
-    text-align: center;
-    line-height: 1.4;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    animation: fadeIn 2s ease-in-out;
-  }
 
-  .quoteLeft {
-    left: 20px;
-  }
 
-  .quoteRight {
-    right: 20px;
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-`;
-document.head.appendChild(quoteStyle);
 
 
 document.addEventListener('keydown', (e) => {
-  if (e.key.toLowerCase() === 'x') {
-    let boom = document.createElement('div');
-    boom.innerText = '💥💥💥';
-    boom.style.position = 'fixed';
-    boom.style.top = '40%';
-    boom.style.left = '50%';
-    boom.style.fontSize = '60px';
-    boom.style.transform = 'translate(-50%, -50%)';
-    boom.style.zIndex = '10000';
-    document.body.innerHTML = '';
-    document.body.appendChild(boom);
-  }
+	if (e.key.toLowerCase() === 'x') {
+		let boom = document.createElement('div');
+		boom.innerText = '💥💥💥';
+		boom.style.position = 'fixed';
+		boom.style.top = '40%';
+		boom.style.left = '50%';
+		boom.style.fontSize = '60px';
+		boom.style.transform = 'translate(-50%, -50%)';
+		boom.style.zIndex = '10000';
+		document.body.innerHTML = '';
+		document.body.appendChild(boom);
+	}
 });
 let cheatInput = '';
 document.addEventListener('keydown', (e) => {
-  cheatInput += e.key.toLowerCase();
-  if (cheatInput.endsWith('iddqd')) {
-    bankValue += 1000000;
-    document.getElementById('bankSpan').innerText = bankValue.toLocaleString("en-GB");
+	cheatInput += e.key.toLowerCase();
+	if (cheatInput.endsWith('iddqd')) {
+		bankValue += 1000000;
+		document.getElementById('bankSpan').innerText = bankValue.toLocaleString("en-GB");
 
-    document.querySelectorAll('.cdChip').forEach(chip => {
-      if (chip.innerText === '100') {
-        chip.querySelector('.cdChipSpan').innerText = '100000';
-      }
-    });
+		document.querySelectorAll('.cdChip').forEach(chip => {
+			if (chip.innerText === '100') {
+				chip.querySelector('.cdChipSpan').innerText = '100000';
+			}
+		});
+		updateWagerLimits();
+		cheatInput = '';
+	}
 
-    cheatInput = '';
-  }
-
-  if (cheatInput.length > 10) cheatInput = cheatInput.slice(-10); // Eingabe begrenzen
+	if (cheatInput.length > 10) cheatInput = cheatInput.slice(-10); // Eingabe begrenzen
 });
 let cheatInput2 = '';
 document.addEventListener('keydown', (e) => {
-  cheatInput2 += e.key.toLowerCase();
-  if (cheatInput2.endsWith('iddqd')) {
-    bankValue += 1000000;
-    document.getElementById('bankSpan').innerText = bankValue.toLocaleString("en-GB");
-    document.querySelectorAll('.cdChip').forEach(chip => {
-      let span = chip.querySelector('.cdChipSpan');
-      if (span && span.innerText === '100') {
-        span.innerText = '100000';
-      }
-    });
-    cheatInput2 = '';
-  } else if (cheatInput2.endsWith('iddwd')) {
-    bankValue += 10000000;
-    document.getElementById('bankSpan').innerText = bankValue.toLocaleString("en-GB");
-    document.querySelectorAll('.cdChip').forEach(chip => {
-      let span = chip.querySelector('.cdChipSpan');
-      if (span && span.innerText === '100') {
-        span.innerText = '1000000';
-      }
-    });
-    cheatInput2 = '';
-  }
+	cheatInput2 += e.key.toLowerCase();
+	if (cheatInput2.endsWith('iddqd')) {
+		bankValue += 1000000;
+		document.getElementById('bankSpan').innerText = bankValue.toLocaleString("en-GB");
+		document.querySelectorAll('.cdChip').forEach(chip => {
+			let span = chip.querySelector('.cdChipSpan');
+			if (span && span.innerText === '100') {
+				span.innerText = '100000';
+			}
+		});
+		updateWagerLimits();
+		cheatInput2 = '';
+	} else if (cheatInput2.endsWith('iddwd')) {
+		bankValue += 10000000;
+		document.getElementById('bankSpan').innerText = bankValue.toLocaleString("en-GB");
+		document.querySelectorAll('.cdChip').forEach(chip => {
+			let span = chip.querySelector('.cdChipSpan');
+			if (span && span.innerText === '100') {
+				span.innerText = '1000000';
+			}
+		});
+		cheatInput2 = '';
+	}
 
-  if (cheatInput2.length > 10) cheatInput2 = cheatInput2.slice(-10);
+	if (cheatInput2.length > 10) cheatInput2 = cheatInput2.slice(-10);
 });
-let allInBtn = document.createElement('button');
-allInBtn.innerText = 'All-In';
-allInBtn.style.position = 'fixed';
-allInBtn.style.bottom = '60px';
-allInBtn.style.right = '10px';
-allInBtn.style.padding = '10px 15px';
-allInBtn.style.fontSize = '16px';
-allInBtn.style.backgroundColor = '#008800';
-allInBtn.style.color = '#fff';
-allInBtn.style.border = 'none';
-allInBtn.style.borderRadius = '8px';
-allInBtn.style.cursor = 'pointer';
-allInBtn.style.zIndex = '9999';
 
-allInBtn.onclick = function () {
-  if (!lastBetTarget || bankValue === 0) return;
-  let total = bankValue;
-  let chipValue = wager > 0 ? wager : 5; // fallback
-  while (total >= chipValue) {
-    setBet(lastBetTarget.element, lastBetTarget.numbers, lastBetTarget.type, lastBetTarget.odds);
-    total -= chipValue;
-  }
-};
-
-document.body.appendChild(allInBtn);
 
 
 window.addEventListener('beforeunload', function (e) {
-  const confirmationMessage = "99% der Spieler hören zu früh auf – vielleicht wär der nächste Dreh dein Gewinn gewesen!";
-  e.returnValue = confirmationMessage; // Für die meisten Browser
-  return confirmationMessage; // Für manche Browser wie Firefox
+	const confirmationMessage = "99% der Spieler hören zu früh auf – vielleicht wär der nächste Dreh dein Gewinn gewesen!";
+	e.returnValue = confirmationMessage; // Für die meisten Browser
+	return confirmationMessage; // Für manche Browser wie Firefox
 });
 // Spiel verlassen Button
 let exitBtn = document.createElement('button');
@@ -907,12 +1252,28 @@ exitBtn.style.cursor = 'pointer';
 exitBtn.style.zIndex = '9999';
 
 exitBtn.onclick = function (e) {
-  const leave = confirm("⚠️ 99 % der Spieler hören zu früh auf – vielleicht wär der nächste Dreh dein Gewinn gewesen! Willst du wirklich aufhören?");
-  if (leave) {
-    window.location.href = 'https://www.google.com'; // Oder beliebige andere Seite
-  }
+	const leave = confirm("⚠️ 99 % der Spieler hören zu früh auf – vielleicht wär der nächste Dreh dein Gewinn gewesen! Willst du wirklich aufhören?");
+	if (leave) {
+		window.location.href = 'https://www.google.com'; // Oder beliebige andere Seite
+	}
 };
 
 document.body.appendChild(exitBtn);
+let cheatBuffer = '';
+const cheatCode = 'iddsd';
+
+document.addEventListener('keydown', (e) => {
+	cheatBuffer += e.key.toLowerCase();
+	if (cheatBuffer.length > cheatCode.length) {
+		cheatBuffer = cheatBuffer.slice(-cheatCode.length);
+	}
+	if (cheatBuffer === cheatCode) {
+		let autoSpinEl = document.querySelector('.autoSpinControls');
+		if (autoSpinEl) {
+			autoSpinEl.classList.add('active');
+			updateAutoSpinStatus('🟢 Cheat aktiviert – Auto Spin bereit!');
+		}
+	}
+});
 
 
