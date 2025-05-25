@@ -796,3 +796,203 @@ html, body{
 	margin-top: -25px;
 }
 /*chip end*/
+.wagerControls {
+	position: absolute;
+	margin-left: 600px;
+	margin-top: -74px;
+	width: 310px;
+	padding: 8px;
+	border: 1px solid #fff;
+	border-radius: 10px;
+	background-color: rgba(0, 0, 0, 0.3);
+	color: #fff;
+}
+
+.wagerLabel {
+	font-size: 14px;
+	font-weight: bold;
+	margin-bottom: 8px;
+	text-align: center;
+}
+
+.sliderContainer {
+	display: flex;
+	gap: 10px;
+	align-items: center;
+	margin-bottom: 8px;
+}
+
+.wagerSlider {
+	flex: 2;
+	height: 25px;
+	background: #ddd;
+	border-radius: 5px;
+	outline: none;
+	cursor: pointer;
+}
+
+.wagerSlider::-webkit-slider-thumb {
+	appearance: none;
+	width: 20px;
+	height: 20px;
+	background: #ffec00;
+	border-radius: 50%;
+	cursor: pointer;
+	border: 2px solid #000;
+}
+
+.wagerSlider::-moz-range-thumb {
+	width: 20px;
+	height: 20px;
+	background: #ffec00;
+	border-radius: 50%;
+	cursor: pointer;
+	border: 2px solid #000;
+}
+
+.wagerInput {
+	flex: 1;
+	padding: 5px;
+	border: 2px solid #fff;
+	border-radius: 5px;
+	background-color: #000;
+	color: #fff;
+	font-size: 14px;
+	font-weight: bold;
+	text-align: center;
+}
+
+.wagerInput:focus {
+	outline: none;
+	border-color: #ffec00;
+}
+
+.currentWagerDisplay {
+	text-align: center;
+	font-size: 12px;
+	font-weight: bold;
+	color: #ffec00;
+}
+.maxButton {
+	padding: 5px 12px;
+	border: 2px solid #fff;
+	border-radius: 5px;
+	background-color: #ff6600;
+	color: #fff;
+	font-size: 14px;
+	font-weight: bold;
+	cursor: pointer;
+	margin-left: 5px;
+	transition: background-color 0.2s;
+}
+
+.maxButton:hover {
+	background-color: #ff8800;
+}
+
+.maxButton:active {
+	background-color: #cc4400;
+}
+.autoSpinControls {
+	position: absolute;
+	margin-left: 600px;
+	margin-top: -200px;
+	width: 410px;
+	padding: 10px;
+	border: 2px solid #ff6600;
+	border-radius: 10px;
+	background-color: rgba(255, 102, 0, 0.2);
+	color: #fff;
+}
+
+.autoSpinLabel {
+	font-size: 16px;
+	font-weight: bold;
+	margin-bottom: 10px;
+	text-align: center;
+	color: #ff6600;
+}
+
+.autoSpinContainer {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+	margin-bottom: 8px;
+}
+
+.autoSpinInput {
+	flex: 1;
+	padding: 5px;
+	border: 2px solid #ff6600;
+	border-radius: 5px;
+	background-color: #000;
+	color: #fff;
+	font-size: 12px;
+	font-weight: bold;
+	text-align: center;
+}
+
+.autoSpinInput:focus {
+	outline: none;
+	border-color: #ffaa00;
+}
+
+.autoSpinButton {
+	padding: 6px 15px;
+	border: 2px solid #fff;
+	border-radius: 5px;
+	background-color: #008800;
+	color: #fff;
+	font-size: 12px;
+	font-weight: bold;
+	cursor: pointer;
+	transition: background-color 0.2s;
+}
+
+.autoSpinButton:hover {
+	background-color: #00aa00;
+}
+
+.autoSpinStatus {
+	text-align: center;
+	font-size: 11px;
+	font-weight: bold;
+	color: #ffaa00;
+	min-height: 15px;
+}
+.quoteLeft, .quoteRight {
+	position: absolute;
+	width: 240px;
+	height: 120px;
+	font-size: 18px;
+	font-weight: bold;
+	color: #fff;
+	background: linear-gradient(145deg, #444, #111);
+	padding: 20px;
+	border-radius: 12px;
+	box-shadow: 0 0 10px rgba(0,0,0,0.5);
+	z-index: 9999;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	line-height: 1.4;
+}
+
+.quoteLeft {
+	top: 420px;
+	left: 120px;
+}
+
+.quoteRight {
+	top: 420px;
+	right: 30px;
+}
+.autoSpinControls {
+	display: none;
+}
+.autoSpinControls.active {
+	display: block;
+}
+
+
