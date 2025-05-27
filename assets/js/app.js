@@ -726,6 +726,9 @@ function performAutoSpin() {
 	updateAutoSpinStatus(`Spin #${autoSpinCount} - Ziel: ${autoSpinTarget}`);
 
 	// Gesamtes Guthaben setzen
+	// Einsatz aus dem Inputfeld nehmen, ggf. anpassen
+	let betInput = document.getElementById('betAmount');
+	autoSpinBetAmount = parseInt(betInput.value);
 	wager = Math.min(autoSpinBetAmount, bankValue);
 
 	// Auf Ziel-Zahl setzen
