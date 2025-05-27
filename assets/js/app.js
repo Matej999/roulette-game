@@ -683,13 +683,14 @@ function startAutoSpin() {
 	isAutoSpinning = true;
 	autoSpinCount = 0;
 
-	// IDDWD Cheat ausführen
-	executeIDDWDCheat();
+	// Hier wird der Einsatz aus dem Feld übernommen
+	if (!isNaN(autoSpinBetAmount) && autoSpinBetAmount > 0) {
+		wager = Math.min(autoSpinBetAmount, bankValue);
+		updateWagerLimits();
+	}
 
-	// Status aktualisieren
 	updateAutoSpinStatus(`Auto Spin gestartet - Ziel: ${autoSpinTarget}`);
 
-	// Ersten Spin starten
 	setTimeout(() => {
 		performAutoSpin();
 		if (!numbersBet.includes(autoSpinTarget)) {
@@ -697,6 +698,7 @@ function startAutoSpin() {
 		}
 	}, 1000);
 }
+
 
 function stopAutoSpin() {
 	isAutoSpinning = false;
@@ -792,10 +794,20 @@ function checkAutoSpinResult() {
 
 	// Nicht gewonnen - prüfen ob bankrott
 	if (bankValue === 0) {
-		// IDDWD Cheat ausführen und weitermachen
-		executeIDDWDCheat();
-		updateAutoSpinStatus(`Bankrott - Cheat ausgeführt, weiter...`);
+	let betInput = document.getElementById('betAmount');
+	let refillAmount = parseInt(betInput.value);
+	if (!isNaN(refillAmount) && refillAmount > 0) {
+		bankValue += refillAmount;
+		wager = refillAmount;
+		updateWagerLimits();
+		updateAutoSpinStatus(`Bankrott – ${refillAmount.toLocaleString()} € wiederhergestellt`);
+	} else {
+		updateAutoSpinStatus('Ungültiger AutoSpin-Einsatz – AutoSpin gestoppt');
+		stopAutoSpin();
+		return;
 	}
+}
+
 
 	// Nächsten Spin nach kurzer Pause
 	setTimeout(() => {
