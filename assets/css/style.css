@@ -994,3 +994,8 @@ html, body{
 .autoSpinControls.active {
 	display: block;
 }
+@media (max-width: 1600px) {
+	.quoteLeft, .quoteRight {
+		display: none;
+	}
+}
