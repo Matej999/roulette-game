@@ -696,7 +696,7 @@ function startAutoSpin() {
 		if (!numbersBet.includes(autoSpinTarget)) {
 			numbersBet.push(autoSpinTarget);
 		}
-	}, 1000);
+	}, 500);
 }
 
 
