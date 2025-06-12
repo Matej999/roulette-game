@@ -1248,3 +1248,8 @@ exitBtn.onclick = function (e) {
 };
 
 document.body.appendChild(exitBtn);
+
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports.removeChips = removeChips;
+}
+
