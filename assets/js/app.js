@@ -36,7 +36,6 @@ function resetGame(){
 function startGame(){
         buildWheel();
         buildBettingBoard();
-        createDepositPortal();
 }
 
 function gameOver(){
@@ -587,13 +586,6 @@ function buildBettingBoard(){
         bet.append(betSpan);
         bankContainer.append(bet);
 
-        let depositBtn = document.createElement('div');
-        depositBtn.setAttribute('class', 'depositBtn');
-        depositBtn.innerText = 'Einzahlen';
-        depositBtn.onclick = function() {
-                openDepositPortal();
-        };
-        bankContainer.append(depositBtn);
         bettingBoard.append(bankContainer);
 
 	let pnBlock = document.createElement('div');
@@ -1080,17 +1072,6 @@ function getHotNumbers(count) {
         return sorted.slice(0, count).map(item => parseInt(item[0]));
 }
 
-// Erhöht das Guthaben um den angegebenen Betrag
-function deposit(amount) {
-        if (typeof amount !== 'number' || amount <= 0) return;
-        bankValue += amount;
-        let bankSpan = document.getElementById('bankSpan');
-        if (bankSpan) {
-                bankSpan.innerText = bankValue.toLocaleString("en-GB");
-        }
-        updateWagerLimits();
-}
-
 function updateWagerLimits() {
         let maxWager = bankValue;
         let sliderElement = document.getElementById('wagerSlider');
@@ -1113,57 +1094,6 @@ function updateWagerLimits() {
         }
 }
 
-function openDepositPortal() {
-        let overlay = document.getElementById('depositOverlay');
-        if (overlay) {
-                overlay.style.display = 'flex';
-        }
-}
-
-function createDepositPortal() {
-        let overlay = document.createElement('div');
-        overlay.setAttribute('id', 'depositOverlay');
-        overlay.setAttribute('class', 'depositOverlay');
-        overlay.style.display = 'none';
-
-        let modal = document.createElement('div');
-        modal.setAttribute('class', 'depositModal');
-
-        let heading = document.createElement('h3');
-        heading.innerText = 'Einzahlen';
-        modal.append(heading);
-
-        let methodSelect = document.createElement('select');
-        methodSelect.innerHTML = '<option>Kreditkarte</option><option>PayPal</option><option>Crypto</option>';
-        modal.append(methodSelect);
-
-        let amountInput = document.createElement('input');
-        amountInput.setAttribute('type', 'number');
-        amountInput.setAttribute('min', '1');
-        amountInput.setAttribute('value', '100');
-        modal.append(amountInput);
-
-        let payBtn = document.createElement('button');
-        payBtn.innerText = 'Einzahlen';
-        payBtn.onclick = function() {
-                let value = parseInt(amountInput.value);
-                if (!isNaN(value) && value > 0) {
-                        deposit(value);
-                        overlay.style.display = 'none';
-                }
-        };
-        modal.append(payBtn);
-
-        let cancelBtn = document.createElement('button');
-        cancelBtn.innerText = 'Abbrechen';
-        cancelBtn.onclick = function() {
-                overlay.style.display = 'none';
-        };
-        modal.append(cancelBtn);
-
-        overlay.append(modal);
-        document.body.appendChild(overlay);
-}
 }
 
 // Easter Eggs und Cheats
@@ -1330,6 +1260,5 @@ document.body.appendChild(exitBtn);
 if (typeof module !== 'undefined' && module.exports) {
     module.exports.removeChips = removeChips;
     module.exports.getHotNumbers = getHotNumbers;
-    module.exports.deposit = deposit;
 }
 
