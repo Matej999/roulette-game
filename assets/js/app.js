@@ -1055,14 +1055,12 @@ function spinWheel(winningSpin){
 	}, 10000);
 }
 
+// Entferne alle Chips ohne rekursive Aufrufe, um Stacküberläufe zu vermeiden
 function removeChips(){
-	var chips = document.getElementsByClassName('chip');
-	if(chips.length > 0){
-		for(i = 0; i < chips.length; i++){
-			chips[i].remove();
-		}
-		removeChips();
-	}
+        let chips = document.getElementsByClassName('chip');
+        while (chips.length > 0) {
+                chips[0].remove();
+        }
 }
 
 function updateWagerLimits() {
