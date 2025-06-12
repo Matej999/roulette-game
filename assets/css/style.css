@@ -995,7 +995,8 @@ html, body{
 	display: block;
 }
 @media (max-width: 1600px) {
-	.quoteLeft, .quoteRight {
-		display: none;
-	}
+        .quoteLeft, .quoteRight {
+                display: none;
+        }
 }
+

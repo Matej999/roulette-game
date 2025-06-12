@@ -34,8 +34,8 @@ function resetGame(){
 }
 
 function startGame(){
-	buildWheel();
-	buildBettingBoard();
+        buildWheel();
+        buildBettingBoard();
 }
 
 function gameOver(){
@@ -578,14 +578,15 @@ function buildBettingBoard(){
 	bank.append(bankSpan);
 	bankContainer.append(bank);
 
-	let bet = document.createElement('div');
-	bet.setAttribute('class', 'bet');
-	let betSpan = document.createElement('span');
-	betSpan.setAttribute('id', 'betSpan');
-	betSpan.innerText = '' + currentBet.toLocaleString("en-GB") + '';
-	bet.append(betSpan);
-	bankContainer.append(bet);
-	bettingBoard.append(bankContainer);
+        let bet = document.createElement('div');
+        bet.setAttribute('class', 'bet');
+        let betSpan = document.createElement('span');
+        betSpan.setAttribute('id', 'betSpan');
+        betSpan.innerText = '' + currentBet.toLocaleString("en-GB") + '';
+        bet.append(betSpan);
+        bankContainer.append(bet);
+
+        bettingBoard.append(bankContainer);
 
 	let pnBlock = document.createElement('div');
 	pnBlock.setAttribute('class', 'pnBlock');
@@ -1061,10 +1062,20 @@ function removeChips(){
         }
 }
 
+// Liefert die am häufigsten gezogenen Zahlen zurueck
+function getHotNumbers(count) {
+        let freq = {};
+        for (let num of previousNumbers) {
+                freq[num] = (freq[num] || 0) + 1;
+        }
+        let sorted = Object.entries(freq).sort((a, b) => b[1] - a[1]);
+        return sorted.slice(0, count).map(item => parseInt(item[0]));
+}
+
 function updateWagerLimits() {
-	let maxWager = bankValue;
-	let sliderElement = document.getElementById('wagerSlider');
-	let inputElement = document.getElementById('wagerInput');
+        let maxWager = bankValue;
+        let sliderElement = document.getElementById('wagerSlider');
+        let inputElement = document.getElementById('wagerInput');
 
 	if (sliderElement && inputElement) {
 		sliderElement.setAttribute('max', maxWager);
@@ -1080,8 +1091,9 @@ function updateWagerLimits() {
 		let displayElement = document.querySelector('.currentWagerDisplay');
 		if (displayElement) {
 			displayElement.innerText = 'Aktueller Einsatz: ' + wager.toLocaleString("en-GB");
-		}
-	}
+        }
+}
+
 }
 
 // Easter Eggs und Cheats
@@ -1247,5 +1259,6 @@ document.body.appendChild(exitBtn);
 
 if (typeof module !== 'undefined' && module.exports) {
     module.exports.removeChips = removeChips;
+    module.exports.getHotNumbers = getHotNumbers;
 }
 
