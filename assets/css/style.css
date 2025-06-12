@@ -1000,11 +1000,13 @@ html, body{
         }
 }
 
-.depositBtn {
+.deposit {
         position: absolute;
         right: 5px;
         top: 5px;
         z-index: 1;
+        display: inline-block;
+        margin-left: 7px;
         background-color: #0088ff;
         color: #fff;
         padding: 5px 10px;
