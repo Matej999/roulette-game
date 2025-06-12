@@ -903,7 +903,7 @@ function spin(){
 	spinWheel(winningSpin);
 	previousNumbers.push(winningSpin);
 	setTimeout(function(){
-		// KRITISCHER FIX: Gewinnberechnung korrigiert
+               // Berechnung des Gesamtgewinns
 		let totalWin = 0;
 		let totalBetAmount = 0;
 		let hasWon = false;
