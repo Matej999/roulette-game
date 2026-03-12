@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sichere Einzahlung – Royal Roulette</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #05050f;
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #fff;
+    }
+
+    /* ---- HEADER ---- */
+    #deposit-header {
+      width: 100%;
+      background: linear-gradient(180deg, #0d0d22, #080812);
+      border-bottom: 1px solid rgba(201,162,39,0.35);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .back-btn {
+      color: rgba(201,162,39,0.8);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.2s;
+    }
+    .back-btn:hover { color: #c9a227; }
+
+    .header-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      font-weight: 900;
+      color: #c9a227;
+      letter-spacing: 6px;
+      text-shadow: 0 0 20px rgba(201,162,39,0.4);
+    }
+
+    .ssl-badge {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      color: rgba(46,204,113,0.9);
+      font-weight: 600;
+    }
+
+    /* ---- CONTAINER ---- */
+    #deposit-container {
+      width: 100%;
+      max-width: 460px;
+      padding: 28px 16px 60px;
+    }
+
+    .page-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 26px;
+      color: #fff;
+      margin: 0 0 4px;
+      font-weight: 700;
+    }
+
+    .page-subtitle {
+      font-size: 12px;
+      color: rgba(255,255,255,0.38);
+      margin: 0 0 24px;
+    }
+
+    /* ---- CARD PREVIEW ---- */
+    .card-preview {
+      width: 100%;
+      height: 175px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+      padding: 20px 24px 18px;
+      margin-bottom: 22px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 14px 44px rgba(0,0,0,0.65);
+      transition: background 0.5s;
+      user-select: none;
+    }
+
+    .card-preview.visa-card   { background: linear-gradient(135deg, #0f1f4a, #1a3070, #0d3080); }
+    .card-preview.mc-card     { background: linear-gradient(135deg, #1a0505, #380a0a, #6b0f1a); }
+    .card-preview.amex-card   { background: linear-gradient(135deg, #0a1a0a, #0e2e0e, #1a5c20); }
+    .card-preview.discover-card { background: linear-gradient(135deg, #1a120a, #3a250e, #7a4d1a); }
+
+    .card-preview::before {
+      content: '';
+      position: absolute;
+      top: -50px; right: -50px;
+      width: 200px; height: 200px;
+      border-radius: 100%;
+      background: rgba(255,255,255,0.04);
+    }
+    .card-preview::after {
+      content: '';
+      position: absolute;
+      bottom: -70px; right: 30px;
+      width: 220px; height: 220px;
+      border-radius: 100%;
+      background: rgba(255,255,255,0.03);
+    }
+
+    .card-chip {
+      width: 38px;
+      height: 28px;
+      background: linear-gradient(135deg, #c9a227, #f0c040, #b08920);
+      border-radius: 5px;
+      margin-bottom: 14px;
+      position: relative;
+    }
+    .card-chip::after {
+      content: '';
+      position: absolute;
+      top: 50%; left: 0; right: 0;
+      height: 1px;
+      background: rgba(0,0,0,0.25);
+      transform: translateY(-50%);
+    }
+
+    .card-number-display {
+      font-family: 'Courier New', monospace;
+      font-size: 19px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.92);
+      letter-spacing: 3px;
+      margin-bottom: 14px;
+      text-shadow: 1px 1px 4px rgba(0,0,0,0.6);
+    }
+
+    .card-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .card-name-label, .card-exp-label {
+      font-size: 8px;
+      color: rgba(255,255,255,0.45);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 3px;
+    }
+
+    .card-holder-display {
+      font-size: 12px;
+      color: rgba(255,255,255,0.85);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      font-weight: 500;
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .card-expiry-display {
+      font-size: 14px;
+      color: rgba(255,255,255,0.85);
+      letter-spacing: 1px;
+      font-weight: 500;
+      text-align: right;
+    }
+
+    .card-type-label {
+      position: absolute;
+      top: 18px; right: 20px;
+      font-size: 15px;
+      font-weight: 800;
+      color: rgba(255,255,255,0.9);
+      font-style: italic;
+      letter-spacing: 1px;
+    }
+
+    /* ---- FORM ---- */
+    .form-panel {
+      background: linear-gradient(145deg, #0d0d1e, #080818);
+      border: 1px solid rgba(201,162,39,0.18);
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 14px;
+    }
+
+    .form-group { margin-bottom: 16px; }
+    .form-group:last-child { margin-bottom: 0; }
+
+    .form-label {
+      display: block;
+      font-size: 10px;
+      font-weight: 700;
+      color: rgba(201,162,39,0.65);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 7px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 12px 14px;
+      background: rgba(255,255,255,0.055);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 9px;
+      color: #fff;
+      font-size: 16px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      outline: none;
+      transition: all 0.2s;
+    }
+    .form-input:focus {
+      border-color: rgba(201,162,39,0.55);
+      background: rgba(255,255,255,0.08);
+      box-shadow: 0 0 0 3px rgba(201,162,39,0.09);
+    }
+    .form-input.valid   { border-color: rgba(46,204,113,0.55); }
+    .form-input.invalid { border-color: rgba(220,50,50,0.6); }
+    .form-input::placeholder { color: rgba(255,255,255,0.18); }
+    /* remove arrows from number input */
+    .form-input[type=number]::-webkit-inner-spin-button,
+    .form-input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
+    .form-input[type=number] { -moz-appearance: textfield; }
+
+    .form-row { display: flex; gap: 10px; }
+    .form-row .form-group { flex: 1; }
+
+    .input-hint {
+      font-size: 11px;
+      color: rgba(220,60,60,0.85);
+      margin-top: 5px;
+      min-height: 14px;
+    }
+
+    /* ---- AMOUNT ---- */
+    .amount-panel {
+      background: linear-gradient(145deg, #0d0d1e, #080818);
+      border: 1px solid rgba(201,162,39,0.18);
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 18px;
+    }
+
+    .amount-presets {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .preset-btn {
+      padding: 7px 13px;
+      background: rgba(201,162,39,0.07);
+      border: 1px solid rgba(201,162,39,0.28);
+      border-radius: 7px;
+      color: rgba(201,162,39,0.75);
+      font-size: 13px;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: all 0.18s;
+    }
+    .preset-btn:hover, .preset-btn.active {
+      background: rgba(201,162,39,0.18);
+      border-color: rgba(201,162,39,0.7);
+      color: #c9a227;
+    }
+
+    .amount-input-wrap { position: relative; }
+
+    .amount-currency {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 18px;
+      font-weight: 700;
+      color: rgba(201,162,39,0.65);
+      pointer-events: none;
+    }
+
+    #amountInput {
+      padding-left: 34px;
+      font-size: 22px;
+      font-weight: 700;
+      color: #c9a227;
+    }
+
+    /* ---- PAY BUTTON ---- */
+    .pay-btn {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #a07820, #e8c840, #c9a227, #f0d868);
+      border: none;
+      border-radius: 11px;
+      color: #0a0a0a;
+      font-size: 16px;
+      font-weight: 800;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: all 0.22s;
+      box-shadow: 0 4px 22px rgba(201,162,39,0.32);
+      letter-spacing: 0.3px;
+    }
+    .pay-btn:hover {
+      box-shadow: 0 6px 32px rgba(201,162,39,0.52);
+      transform: translateY(-1px);
+    }
+    .pay-btn:active { transform: translateY(1px); }
+
+    .security-note {
+      text-align: center;
+      font-size: 10px;
+      color: rgba(255,255,255,0.25);
+      margin-top: 14px;
+      line-height: 1.7;
+    }
+
+    /* ---- LOADING OVERLAY ---- */
+    #loadingOverlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(5,5,15,0.97);
+      z-index: 200;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+    }
+    #loadingOverlay.visible { display: flex; }
+
+    .loading-icon {
+      font-size: 52px;
+      animation: iconPulse 1.4s ease-in-out infinite;
+    }
+    @keyframes iconPulse {
+      0%,100% { transform: scale(1);   opacity: 0.8; }
+      50%      { transform: scale(1.1); opacity: 1;   }
+    }
+
+    .loading-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: rgba(201,162,39,0.55);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .loading-stage {
+      font-size: 17px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.88);
+      text-align: center;
+      min-height: 26px;
+      transition: opacity 0.3s;
+    }
+
+    .loading-track {
+      width: 290px;
+      height: 5px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .loading-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #c9a227, #f0d060);
+      border-radius: 3px;
+      width: 0%;
+      transition: width 0.7s ease;
+    }
+
+    .loading-sub {
+      font-size: 11px;
+      color: rgba(255,255,255,0.3);
+      min-height: 16px;
+    }
+
+    /* ---- SUCCESS OVERLAY ---- */
+    #successOverlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(5,5,15,0.98);
+      z-index: 201;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+    #successOverlay.visible { display: flex; }
+
+    .success-icon {
+      font-size: 70px;
+      animation: successPop 0.55s cubic-bezier(0.175,0.885,0.32,1.275) both;
+    }
+    @keyframes successPop {
+      from { transform: scale(0) rotate(-15deg); opacity: 0; }
+      to   { transform: scale(1) rotate(0deg);  opacity: 1; }
+    }
+
+    .success-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 30px;
+      font-weight: 900;
+      color: #2ecc71;
+      text-shadow: 0 0 30px rgba(46,204,113,0.35);
+    }
+
+    .success-amount {
+      font-size: 46px;
+      font-weight: 800;
+      color: #c9a227;
+      text-shadow: 0 0 22px rgba(201,162,39,0.4);
+    }
+
+    .success-msg {
+      font-size: 14px;
+      color: rgba(255,255,255,0.45);
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    .success-countdown {
+      font-size: 12px;
+      color: rgba(201,162,39,0.6);
+      margin-top: 6px;
+    }
+
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      20%,60%  { transform: translateX(-8px); }
+      40%,80%  { transform: translateX(8px); }
+    }
+  </style>
+</head>
+<body>
+
+  <header id="deposit-header">
+    <a class="back-btn" href="index.html">← Zurück zum Spiel</a>
+    <div class="header-logo">ROYAL ROULETTE</div>
+    <div class="ssl-badge">🔒 SSL gesichert</div>
+  </header>
+
+  <div id="deposit-container">
+    <h1 class="page-title">Einzahlung</h1>
+    <p class="page-subtitle">Sichere Zahlung mit 256-Bit SSL-Verschlüsselung · PCI-DSS konform</p>
+
+    <!-- Card Preview -->
+    <div class="card-preview" id="cardPreview">
+      <div class="card-chip"></div>
+      <div class="card-number-display" id="cardNumDisplay">•••• •••• •••• ••••</div>
+      <div class="card-bottom">
+        <div>
+          <div class="card-name-label">Karteninhaber</div>
+          <div class="card-holder-display" id="cardHolderDisplay">VORNAME NACHNAME</div>
+        </div>
+        <div style="text-align:right">
+          <div class="card-exp-label">Gültig bis</div>
+          <div class="card-expiry-display" id="cardExpDisplay">MM / JJ</div>
+        </div>
+      </div>
+      <div class="card-type-label" id="cardTypeLabel"></div>
+    </div>
+
+    <!-- Card Details Form -->
+    <div class="form-panel">
+      <div class="form-group">
+        <label class="form-label" for="cardNumber">Kartennummer</label>
+        <input class="form-input" type="text" id="cardNumber"
+               placeholder="1234 5678 9012 3456" maxlength="19"
+               autocomplete="cc-number" inputmode="numeric"/>
+        <div class="input-hint" id="hintCardNumber"></div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="cardName">Name auf der Karte</label>
+        <input class="form-input" type="text" id="cardName"
+               placeholder="MAX MUSTERMANN" autocomplete="cc-name"/>
+        <div class="input-hint" id="hintCardName"></div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="cardExpiry">Ablaufdatum</label>
+          <input class="form-input" type="text" id="cardExpiry"
+                 placeholder="MM / JJ" maxlength="7"
+                 autocomplete="cc-exp" inputmode="numeric"/>
+          <div class="input-hint" id="hintCardExpiry"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="cardCvv">CVV / CVC</label>
+          <input class="form-input" type="text" id="cardCvv"
+                 placeholder="•••" maxlength="4"
+                 autocomplete="cc-csc" inputmode="numeric"/>
+          <div class="input-hint" id="hintCardCvv"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Amount -->
+    <div class="amount-panel">
+      <label class="form-label" style="margin-bottom:12px">Einzahlungsbetrag</label>
+      <div class="amount-presets">
+        <button class="preset-btn" data-amount="50">50 €</button>
+        <button class="preset-btn" data-amount="100">100 €</button>
+        <button class="preset-btn" data-amount="200">200 €</button>
+        <button class="preset-btn" data-amount="500">500 €</button>
+        <button class="preset-btn" data-amount="1000">1.000 €</button>
+        <button class="preset-btn" data-amount="5000">5.000 €</button>
+      </div>
+      <div class="amount-input-wrap">
+        <span class="amount-currency">€</span>
+        <input class="form-input" type="number" id="amountInput"
+               placeholder="0" min="10" max="100000"/>
+      </div>
+      <div class="input-hint" id="hintAmount"></div>
+    </div>
+
+    <button class="pay-btn" id="payBtn" onclick="submitPayment()">
+      💳 &nbsp; Jetzt bezahlen und aufladen
+    </button>
+
+    <p class="security-note">
+      🔒 Diese Seite verwendet 256-Bit SSL-Verschlüsselung.<br>
+      Ihre Kartendaten werden nicht gespeichert oder weitergegeben.
+    </p>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay">
+    <div class="loading-icon" id="loadingIcon">💳</div>
+    <div class="loading-title">Transaktion läuft</div>
+    <div class="loading-stage" id="loadingStage">Bitte warten...</div>
+    <div class="loading-track">
+      <div class="loading-bar" id="loadingBar"></div>
+    </div>
+    <div class="loading-sub" id="loadingSub"></div>
+  </div>
+
+  <!-- Success Overlay -->
+  <div id="successOverlay">
+    <div class="success-icon">✅</div>
+    <div class="success-title">Zahlung erfolgreich!</div>
+    <div class="success-amount" id="successAmount">+ 100 €</div>
+    <div class="success-msg">Ihr Guthaben wurde erfolgreich aufgeladen.<br>Sie werden zurück zum Spiel weitergeleitet.</div>
+    <div class="success-countdown" id="successCountdown">Weiterleitung in 3 Sekunden...</div>
+  </div>
+
+  <script>
+  /* =========================================
+     DEPOSIT PAGE – Validation & Logic
+     ========================================= */
+
+  const cardNumberEl = document.getElementById('cardNumber');
+  const cardNameEl   = document.getElementById('cardName');
+  const cardExpiryEl = document.getElementById('cardExpiry');
+  const cardCvvEl    = document.getElementById('cardCvv');
+  const amountEl     = document.getElementById('amountInput');
+
+  /* ---- LUHN CHECK ---- */
+  function luhnCheck(num) {
+    let sum = 0, flip = false;
+    for (let i = num.length - 1; i >= 0; i--) {
+      let d = parseInt(num[i]);
+      if (flip) { d *= 2; if (d > 9) d -= 9; }
+      sum += d;
+      flip = !flip;
+    }
+    return sum % 10 === 0;
+  }
+
+  /* ---- CARD TYPE ---- */
+  function cardType(raw) {
+    if (/^4/.test(raw))                            return 'visa';
+    if (/^5[1-5]/.test(raw)||/^2[2-7]/.test(raw)) return 'mc';
+    if (/^3[47]/.test(raw))                        return 'amex';
+    if (/^6(?:011|5)/.test(raw))                   return 'discover';
+    return '';
+  }
+
+  function cardTypeLabel(type) {
+    return { visa:'VISA', mc:'Mastercard', amex:'AMEX', discover:'Discover' }[type] || '';
+  }
+
+  /* ---- CARD NUMBER ---- */
+  cardNumberEl.addEventListener('input', function() {
+    let raw = this.value.replace(/\D/g, '');
+    let type = cardType(raw);
+    let maxLen = type === 'amex' ? 15 : 16;
+    raw = raw.slice(0, maxLen);
+
+    // Format with spaces
+    let formatted;
+    if (type === 'amex') {
+      formatted = raw.replace(/^(\d{0,4})(\d{0,6})(\d{0,5})$/, (_, a, b, c) =>
+        [a, b, c].filter(Boolean).join(' ')
+      );
+    } else {
+      formatted = raw.replace(/(\d{4})(?=\d)/g, '$1 ');
+    }
+    this.value = formatted;
+
+    // Update card preview display (with dots for missing positions)
+    let total = maxLen;
+    let padded = raw + '•'.repeat(Math.max(0, total - raw.length));
+    let display;
+    if (type === 'amex') {
+      display = padded.replace(/(.{4})(.{6})(.{5})/, '$1 $2 $3');
+    } else {
+      display = padded.replace(/(.{4})(.{4})(.{4})(.{4})/, '$1 $2 $3 $4');
+    }
+    document.getElementById('cardNumDisplay').textContent = display || '•••• •••• •••• ••••';
+
+    // Update card style
+    let preview = document.getElementById('cardPreview');
+    preview.className = 'card-preview' + (type ? ' ' + type + '-card' : '');
+    document.getElementById('cardTypeLabel').textContent = cardTypeLabel(type);
+
+    // Validate
+    let hint = document.getElementById('hintCardNumber');
+    if (!raw) {
+      hint.textContent = '';
+      this.className = 'form-input';
+    } else if (raw.length < 13) {
+      hint.textContent = 'Kartennummer zu kurz';
+      this.className = 'form-input invalid';
+    } else if (!luhnCheck(raw)) {
+      hint.textContent = 'Ungültige Kartennummer';
+      this.className = 'form-input invalid';
+    } else {
+      hint.textContent = '';
+      this.className = 'form-input valid';
+    }
+  });
+
+  /* ---- CARD NAME ---- */
+  cardNameEl.addEventListener('input', function() {
+    this.value = this.value.toUpperCase().replace(/[^A-ZÄÖÜ\s\-]/g, '');
+    let val = this.value.trim();
+    document.getElementById('cardHolderDisplay').textContent = val || 'VORNAME NACHNAME';
+
+    let hint = document.getElementById('hintCardName');
+    if (!val) {
+      hint.textContent = '';
+      this.className = 'form-input';
+    } else if (val.split(/\s+/).filter(Boolean).length < 2 || val.length < 3) {
+      hint.textContent = 'Vor- und Nachname eingeben';
+      this.className = 'form-input invalid';
+    } else {
+      hint.textContent = '';
+      this.className = 'form-input valid';
+    }
+  });
+
+  /* ---- EXPIRY ---- */
+  cardExpiryEl.addEventListener('keydown', function(e) {
+    // Allow backspace to remove slash cleanly
+    if (e.key === 'Backspace' && this.value.endsWith(' / ')) {
+      e.preventDefault();
+      this.value = this.value.slice(0, -3);
+    }
+  });
+
+  cardExpiryEl.addEventListener('input', function() {
+    let raw = this.value.replace(/\D/g, '').slice(0, 4);
+    let formatted = raw;
+    if (raw.length >= 3) {
+      formatted = raw.slice(0, 2) + ' / ' + raw.slice(2);
+    }
+    this.value = formatted;
+
+    let shortRaw = this.value.replace(/\D/g, '');
+    document.getElementById('cardExpDisplay').textContent = formatted || 'MM / JJ';
+
+    let hint = document.getElementById('hintCardExpiry');
+    if (!shortRaw) {
+      hint.textContent = '';
+      this.className = 'form-input';
+    } else if (shortRaw.length < 4) {
+      hint.textContent = 'Format: MM / JJ';
+      this.className = 'form-input invalid';
+    } else {
+      let month = parseInt(shortRaw.slice(0, 2));
+      let year  = parseInt('20' + shortRaw.slice(2, 4));
+      let now   = new Date();
+      let exp   = new Date(year, month - 1, 1);
+      let cur   = new Date(now.getFullYear(), now.getMonth(), 1);
+      if (month < 1 || month > 12) {
+        hint.textContent = 'Ungültiger Monat (01–12)';
+        this.className = 'form-input invalid';
+      } else if (exp < cur) {
+        hint.textContent = 'Karte ist abgelaufen';
+        this.className = 'form-input invalid';
+      } else {
+        hint.textContent = '';
+        this.className = 'form-input valid';
+      }
+    }
+  });
+
+  /* ---- CVV ---- */
+  cardCvvEl.addEventListener('input', function() {
+    this.value = this.value.replace(/\D/g, '').slice(0, 4);
+    let hint = document.getElementById('hintCardCvv');
+    if (!this.value) {
+      hint.textContent = '';
+      this.className = 'form-input';
+    } else if (this.value.length < 3) {
+      hint.textContent = 'CVV zu kurz (min. 3 Stellen)';
+      this.className = 'form-input invalid';
+    } else {
+      hint.textContent = '';
+      this.className = 'form-input valid';
+    }
+  });
+
+  /* ---- AMOUNT ---- */
+  document.querySelectorAll('.preset-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      amountEl.value = this.dataset.amount;
+      validateAmount();
+    });
+  });
+
+  amountEl.addEventListener('input', function() {
+    document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+    validateAmount();
+  });
+
+  function validateAmount() {
+    let v = parseInt(amountEl.value);
+    let hint = document.getElementById('hintAmount');
+    if (!v || v <= 0) {
+      hint.textContent = '';
+      amountEl.className = 'form-input';
+    } else if (v < 10) {
+      hint.textContent = 'Mindesteinzahlung: 10 €';
+      amountEl.className = 'form-input invalid';
+    } else if (v > 100000) {
+      hint.textContent = 'Maximalbetrag: 100.000 €';
+      amountEl.className = 'form-input invalid';
+    } else {
+      hint.textContent = '';
+      amountEl.className = 'form-input valid';
+    }
+  }
+
+  /* ---- FULL FORM VALIDATION ---- */
+  function isFormValid() {
+    // Card number
+    let rawCard = cardNumberEl.value.replace(/\D/g, '');
+    if (rawCard.length < 13 || !luhnCheck(rawCard)) return false;
+    // Name
+    let name = cardNameEl.value.trim();
+    if (name.split(/\s+/).filter(Boolean).length < 2 || name.length < 3) return false;
+    // Expiry
+    let rawExp = cardExpiryEl.value.replace(/\D/g, '');
+    if (rawExp.length < 4) return false;
+    let m = parseInt(rawExp.slice(0, 2)), y = parseInt('20' + rawExp.slice(2, 4));
+    if (m < 1 || m > 12) return false;
+    let exp = new Date(y, m - 1, 1), cur = new Date();
+    cur = new Date(cur.getFullYear(), cur.getMonth(), 1);
+    if (exp < cur) return false;
+    // CVV
+    if (cardCvvEl.value.length < 3) return false;
+    // Amount
+    let amt = parseInt(amountEl.value);
+    if (!amt || amt < 10 || amt > 100000) return false;
+    return true;
+  }
+
+  /* ---- PAYMENT SUBMISSION ---- */
+  function submitPayment() {
+    // Fire all validators
+    [cardNumberEl, cardNameEl, cardExpiryEl, cardCvvEl, amountEl].forEach(el =>
+      el.dispatchEvent(new Event('input'))
+    );
+
+    if (!isFormValid()) {
+      let btn = document.getElementById('payBtn');
+      btn.style.animation = 'shake 0.4s ease';
+      setTimeout(() => btn.style.animation = '', 450);
+      return;
+    }
+
+    let amount = parseInt(amountEl.value);
+
+    // Show loading overlay
+    document.getElementById('loadingOverlay').classList.add('visible');
+
+    const stages = [
+      { icon:'🔒', text:'Sichere Verbindung wird aufgebaut...', sub:'TLS 1.3 Handshake',            bar: 12, dur: 1200 },
+      { icon:'🔐', text:'SSL-Zertifikat wird validiert...',     sub:'256-Bit Verschlüsselung aktiv', bar: 28, dur:  900 },
+      { icon:'💳', text:'Kartendaten werden überprüft...',      sub:'PCI-DSS Prüfung',              bar: 48, dur: 1500 },
+      { icon:'🏦', text:'Bank wird kontaktiert...',             sub:'Autorisierungsanfrage läuft',  bar: 68, dur: 1900 },
+      { icon:'⚙️', text:'Transaktion wird verarbeitet...',      sub:'Bitte nicht schließen',         bar: 85, dur: 1000 },
+      { icon:'✅', text:'Zahlung wird abgeschlossen...',         sub:'Fast fertig!',                  bar: 98, dur:  700 },
+    ];
+
+    let delay = 0;
+    stages.forEach(stage => {
+      setTimeout(() => {
+        document.getElementById('loadingIcon').textContent  = stage.icon;
+        document.getElementById('loadingStage').textContent = stage.text;
+        document.getElementById('loadingSub').textContent   = stage.sub;
+        document.getElementById('loadingBar').style.width   = stage.bar + '%';
+      }, delay);
+      delay += stage.dur;
+    });
+
+    setTimeout(() => {
+      document.getElementById('loadingBar').style.width = '100%';
+
+      setTimeout(() => {
+        // Save deposit to localStorage for the game to pick up
+        localStorage.setItem('royalRouletteDeposit', String(amount));
+
+        // Show success
+        document.getElementById('loadingOverlay').classList.remove('visible');
+        document.getElementById('successOverlay').classList.add('visible');
+        document.getElementById('successAmount').textContent =
+          '+ ' + amount.toLocaleString('de-DE') + ' €';
+
+        // Countdown redirect
+        let count = 3;
+        let cd = document.getElementById('successCountdown');
+        let timer = setInterval(() => {
+          count--;
+          cd.textContent = `Weiterleitung in ${count} Sekunde${count !== 1 ? 'n' : ''}...`;
+          if (count <= 0) {
+            clearInterval(timer);
+            window.location.href = 'index.html';
+          }
+        }, 1000);
+      }, 600);
+    }, delay);
+  }
+  </script>
+</body>
+</html>
